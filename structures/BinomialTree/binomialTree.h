@@ -2,8 +2,8 @@
 // Created by tarog on 3/23/2020.
 //
 
-#ifndef UNTITLED3_BINOMIALTREE_H
-#define UNTITLED3_BINOMIALTREE_H
+#ifndef BINOMIALTREE_H
+#define BINOMIALTREE_H
 
 #include <memory>
 
@@ -110,4 +110,4 @@ class BinomialTree {
     }
 };
 
-#endif //UNTITLED3_BINOMIALTREE_H
+#endif //BINOMIALTREE_H
