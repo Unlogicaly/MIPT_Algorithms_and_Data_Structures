@@ -13,20 +13,11 @@ template <typename T, class Cmp = std::less<T>>
 size_t pivot(const std::vector<T> &array, size_t left, size_t right, Cmp cmp = {}) {
 
     auto mid = (left + right) / 2;
-    auto a = array[left], b = array[mid], c = array[right - 1];
+    --right;
 
-    if (a < b) {
-        if (b < c)
-            return mid;
-        if (a < c)
-            return right - 1;
-        return left;
-    }
-    if (a < c)
-        return left;
-    if (b < c)
-        return right - 1;
-    return mid;
+    auto a = array[left], b = array[mid], c = array[right];
+
+    return cmp(a, b) ? cmp(b, c) ? mid : cmp(a, c) ? right : left : cmp(a, c) ? left : cmp(b, c) ? right : mid;
 }
 
 template <typename T, class Cmp = std::less<T>>
