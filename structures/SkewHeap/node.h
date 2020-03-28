@@ -26,7 +26,7 @@ class Node {
     }
 
     template <typename, class>
-    friend class LeftistHeap;
+    friend class SkewHeap;
 
   public:
 
