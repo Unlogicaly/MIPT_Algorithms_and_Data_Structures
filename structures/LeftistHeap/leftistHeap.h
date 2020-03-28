@@ -10,12 +10,6 @@
 #include <functional>
 
 template <typename T>
-int_fast32_t rank(Node<T> *src) {
-
-    return (src ? std::min(rank(src->left), rank(src->right)) + 1 : -1);
-}
-
-template <typename T>
 struct heap_base {
 
     Node<T> *root{nullptr};
