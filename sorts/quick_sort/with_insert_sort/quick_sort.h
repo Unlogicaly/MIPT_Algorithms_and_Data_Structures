@@ -5,84 +5,135 @@
 #ifndef UNTITLED_QUICK_SORT_H
 #define UNTITLED_QUICK_SORT_H
 
-#include <functional>
-#include <vector>
-#include <random>
 #include "insert_sort.h"
 
-namespace with_isert {
-    template <typename T, class Cmp = std::less<T>>
-    size_t pivot(const std::vector<T> &array, size_t left, size_t right, Cmp cmp = {}) {
+template <typename _Iter, class _Cmp>
+auto pivot(_Iter begin, _Iter end, _Cmp cmp = {}) {
 
-        auto mid = (left + right) / 2;
-        auto a = array[left], b = array[mid], c = array[right - 1];
+    auto mid = begin + (end - begin) / 2;
 
-        if (a < b) {
-            if (b < c)
-                return mid;
-            if (a < c)
-                return right - 1;
-            return left;
+    if (cmp(*begin, *mid)) {
+        if (cmp(*mid, *(end - 1)))
+            return mid;
+        if (cmp(*begin, *(end - 1)))
+            return end - 1;
+        return begin;
+    }
+
+    if (cmp(*begin, *(end - 1)))
+        return begin;
+    if (cmp(*mid , *(end - 1)))
+        return end - 1;
+    return mid;
+}
+
+template <typename _Iter, class _Cmp>
+_Iter partition(_Iter begin, _Iter end, _Cmp cmp = {}) {
+
+    auto p = pivot(begin, end, cmp);
+
+    auto pivot = *p;
+
+    std::swap(*p, *(end - 1));
+    --end;
+
+    auto i = begin, j = end - 1;
+
+    while (i < j) {
+        while (i != end and cmp(*i, pivot))
+            ++i;
+        while (j != begin and !cmp(*j, pivot))
+            --j;
+
+        if (i < j)
+            std::swap(*i, *j);
+    }
+
+    std::swap(*end, *i);
+
+    return i;
+}
+
+template <typename _Iter, class _Cmp>
+void quick_sort(_Iter begin, _Iter end, _Cmp cmp = {}) {
+
+    while (end - begin > 40) {
+        _Iter p_ind = partition<_Iter, _Cmp>(begin, end);
+        if (p_ind - begin < end - p_ind + 1) {
+            quick_sort(begin, p_ind, cmp);
+            begin = p_ind + 1;
         }
-        if (a < c)
-            return left;
-        if (b < c)
-            return right - 1;
-        return mid;
-    }
-
-    template <typename T, class Cmp = std::less<T>>
-    size_t partition(std::vector<T> &array, size_t left, size_t right, Cmp cmp = {}) {
-
-        auto p_ind = pivot(array, left, right, cmp);
-
-        auto pivot = array[p_ind];
-
-        std::swap(array[p_ind], array[right - 1]);
-        --right;
-
-        auto i = left, j = right - 1;
-
-        while (i < j) {
-            while (i != right and array[i] < pivot)
-                ++i;
-            while (j != left and array[j] >= pivot)
-                --j;
-
-            if (i < j)
-                std::swap(array[i], array[j]);
+        else {
+            quick_sort(p_ind + 1, end, cmp);
+            end = p_ind;
         }
+    }
+    insert_sort(begin, end, cmp);
+}
 
-        std::swap(array[right], array[i]);
+template <typename _Iter>
+auto pivot(_Iter begin, _Iter end) {
 
-        return i;
+    auto mid = begin + (end - begin) / 2;
+
+    if (*begin < *mid) {
+        if (*mid < *(end - 1))
+            return mid;
+        if (*begin < *(end - 1))
+            return end - 1;
+        return begin;
     }
 
-    template <typename T, class Cmp = std::less<T>>
-    void _quick_sort(std::vector<T> &array, size_t left, size_t right, Cmp cmp = {}) {
+    if (*begin < *(end - 1))
+        return begin;
+    if (*mid < *(end - 1))
+        return end - 1;
+    return mid;
+}
 
-        while (right - left > 40) {
-            auto p_ind = partition(array, left, right, cmp);
-            if (p_ind - left < right - p_ind + 1) {
-                _quick_sort(array, left, p_ind, cmp);
-                left = p_ind + 1;
-            }
-            else {
-                _quick_sort(array, p_ind + 1, right, cmp);
-                right = p_ind;
-            }
+template <typename _Iter>
+_Iter partition(_Iter begin, _Iter end) {
+
+    auto p = pivot(begin, end);
+
+    auto pivot = *p;
+
+    std::swap(*p, *(end - 1));
+    --end;
+
+    auto i = begin, j = end - 1;
+
+    while (i < j) {
+        while (i != end and *i < pivot)
+            ++i;
+        while (j != begin and *j >= pivot)
+            --j;
+
+        if (i < j)
+            std::swap(*i, *j);
+    }
+
+    std::swap(*end, *i);
+
+    return i;
+}
+
+template <typename _Iter>
+void quick_sort(_Iter begin, _Iter end) {
+
+    while (end - begin > 40) {
+        _Iter p_ind = partition(begin, end);
+        if (p_ind - begin < end - p_ind + 1) {
+            quick_sort(begin, p_ind);
+            begin = p_ind + 1;
         }
-
-        _insert_sort(array, left, right, cmp);
+        else {
+            quick_sort(p_ind + 1, end);
+            end = p_ind;
+        }
     }
 
-    template <typename T, class Cmp = std::less<T>>
-    void quick_sort(std::vector<T> &array, Cmp cmp = {}) {
-
-        if (array.size() <= 1)
-            return;
-        _quick_sort(array, 0, array.size(), cmp);
-    }
+    insert_sort(begin, end);
 }
 
 #endif //UNTITLED_QUICK_SORT_H

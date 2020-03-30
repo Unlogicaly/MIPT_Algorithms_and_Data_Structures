@@ -5,24 +5,28 @@
 #ifndef INSERT_SORT_H
 #define INSERT_SORT_H
 
-#include <vector>
 #include <algorithm>
 
-template <typename T, class Cmp = std::less<T>>
-void _insert_sort(std::vector<T> &array, size_t left, size_t right, Cmp cmp = {}) {
+template <typename _Iter, class _Cmp>
+void insert_sort(_Iter begin, _Iter end, _Cmp cmp = {}) {
 
-    for (auto i = left; i < right; ++i) {
-        auto pos = std::lower_bound(array.begin() + left, array.begin() + i, array[i], cmp) - array.begin();
-        auto tmp = array[i];
-        memcpy(array.data() + pos + 1, array.data() + pos, (i - pos ) * sizeof(T));
-        array[pos] = tmp;
+    for (auto iter = begin; iter != end; ++iter) {
+        auto pos = std::lower_bound(begin, iter, *iter, cmp);
+        for (auto i = iter; i != pos; --i) {
+            std::swap(*i, *(i - 1));
+        }
     }
 }
 
-template <typename T, class Cmp = std::less<T>>
-void insert_sort(std::vector<T> &array, Cmp cmp = {}) {
+template <typename _Iter>
+void insert_sort(_Iter begin, _Iter end) {
 
-    _insert_sort<T, Cmp>(array, 0, array.size());
+    for (auto iter = begin; iter != end; ++iter) {
+        auto pos = std::lower_bound(begin, iter, *iter);
+        for (auto i = iter; i != pos; --i) {
+            std::swap(*i, *(i - 1));
+        }
+    }
 }
 
 #endif //INSERT_SORT_H

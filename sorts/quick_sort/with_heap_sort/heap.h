@@ -15,7 +15,7 @@ class Heap {
 
     std::vector<T> heap;
 
-    void ShiftUp(size_t index) {
+    void SiftUp(size_t index) {
 
         if (index > heap.size())
             return;
@@ -34,7 +34,7 @@ class Heap {
         return swapIndex;
     }
 
-    void ShiftDown(size_t index) {
+    void SiftDown(size_t index) {
 
         while (index < heap.size()) {
             size_t swapIndex = index;
@@ -56,7 +56,15 @@ class Heap {
     explicit Heap(const std::vector<T> &arr) : heap(arr) {
 
         for (size_t i = (heap.size() >> 1); i > 0; --i) {
-            ShiftDown(i - 1);
+            SiftDown(i - 1);
+        }
+    }
+
+    template <typename _Iter>
+    Heap(_Iter begin, _Iter end) : heap(begin, end) {
+
+        for (auto i = (heap.size() >> 1); i > 0; --i) {
+            SiftDown(i - 1);
         }
     }
 
@@ -114,14 +122,14 @@ class Heap {
         if (!heap.empty()) {
             std::swap(heap.front(), heap.back());
             heap.resize(heap.size() - 1);
-            ShiftDown(0);
+            SiftDown(0);
         }
     }
 
     void add(const T &element) {
 
         heap.push_back(element);
-        ShiftUp(heap.size() - 1);
+        SiftUp(heap.size() - 1);
     }
 
     size_t size() {

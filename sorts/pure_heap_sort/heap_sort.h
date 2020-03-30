@@ -7,25 +7,26 @@
 
 #include "heap.h"
 
-template<typename T, class Cmp = std::less<T>>
-void _heap_sort(std::vector<T> &array, size_t left, size_t right, Cmp cmp={}){
-    Heap<T, Cmp> tmp;
+template<typename _Iter, class _Cmp>
+void heap_sort(_Iter begin, _Iter end, _Cmp cmp = {}) {
 
-    for (auto i = left; i < right; ++i) {
-        tmp.add(array[i]);
-    }
+    Heap<typeof(*begin), _Cmp> src(begin, end);
 
-    for (auto i = left; i < right; ++i) {
-        array[i] = tmp.top();
-        tmp.pop();
+    while (!src.empty()) {
+        *(begin++) = src.top();
+        src.pop();
     }
 }
 
-template<typename T, class Cmp = std::less<T>>
-void heap_sort(std::vector<T> &array, Cmp cmp={}) {
-    if (array.size() <= 1)
-        return;
-    _heap_sort(array, 0, array.size(), cmp);
+template<typename _Iter>
+void heap_sort(_Iter begin, _Iter end) {
+
+    Heap<typeof(*begin)> src(begin, end);
+
+    while (!src.empty()) {
+        *(begin++) = src.top();
+        src.pop();
+    }
 }
 
 #endif //HEAP_SORT_H

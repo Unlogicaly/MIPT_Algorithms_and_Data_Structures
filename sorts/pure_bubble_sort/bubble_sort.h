@@ -5,29 +5,46 @@
 #ifndef BUBBLE_SORT_H
 #define BUBBLE_SORT_H
 
-#include <vector>
-#include <functional>
+template <typename _Iter, class _Cmp>
+void bubble_sort(_Iter begin, _Iter end, _Cmp cmp = {}) {
 
-template <typename T, class Cmp = std::less<T>>
-void _bubble_sort(std::vector<T> &array, size_t left, size_t right, Cmp cmp={}) {
-    for (auto i = left; i < right - 1; ++i) {
+    --end;
+
+    auto last = end;
+
+    for (auto iter1 = begin; iter1 != end; ++iter1, --last) {
         bool sorted = true;
-        for (auto j = left; j < right - i - 1; ++j) {
-            if (!cmp(array[j], array[j + 1])) {
+        for (auto iter2 = begin; iter2 != last; ++iter2) {
+            if (!cmp(*iter2, *(iter2 + 1))) {
                 sorted = false;
-                std::swap(array[j], array[j + 1]);
+                std::swap(*iter2, *(iter2 + 1));
             }
         }
+
         if (sorted)
             break;
     }
 }
 
-template <typename T, class Cmp = std::less<T>>
-void bubble_sort(std::vector<T> &array, Cmp cmp = {}) {
-    if (array.size() <= 1)
-        return;
-    _bubble_sort(array, 0, array.size(), cmp);
+template <typename _Iter>
+void bubble_sort(_Iter begin, _Iter end) {
+
+    --end;
+
+    auto last = end;
+
+    for (auto iter1 = begin; iter1 != end; ++iter1, --last) {
+        bool sorted = true;
+        for (auto iter2 = begin; iter2 != last; ++iter2) {
+            if (*(iter2 + 1) < *iter2) {
+                sorted = false;
+                std::swap(*iter2, *(iter2 + 1));
+            }
+        }
+
+        if (sorted)
+            break;
+    }
 }
 
 #endif //BUBBLE_SORT_H

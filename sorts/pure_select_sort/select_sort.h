@@ -5,26 +5,30 @@
 #ifndef SELECT_SORT_H
 #define SELECT_SORT_H
 
-#include <vector>
-#include <functional>
+template<typename _Iter, class _Cmp>
+void select_sort(_Iter begin, _Iter end, _Cmp cmp = {}){
 
-template <typename T, class Cmp = std::less<T>>
-void _select_sort(std::vector<T> &array, size_t left, size_t right, Cmp cmp={}) {
-    for (auto i = left; i < right - 1; ++i) {
-        size_t ind = i;
-        for (auto j = i + 1; j < right; ++j) {
-            if (cmp(array[j], array[ind]))
-                 ind = j;
+    for (auto iter = begin; iter != end - 1; ++iter) {
+        auto pos = iter;
+        for (auto iter1 = pos + 1; iter1 != end; ++iter1) {
+            if (cmp(*iter1, *pos))
+                pos = iter1;
         }
-        std::swap(array[i], array[ind]);
+        std::swap(*iter, *pos);
     }
 }
 
-template<typename T, class Cmp = std::less<T>>
-void select_sort(std::vector<T> &array, Cmp cmp={}){
-    if (array.size() <= 1)
-        return;
-    _select_sort(array, 0, array.size(), cmp);
+template<typename _Iter>
+void select_sort(_Iter begin, _Iter end){
+
+    for (auto iter = begin; iter != end - 1; ++iter) {
+        auto pos = iter;
+        for (auto iter1 = pos + 1; iter1 != end; ++iter1) {
+            if (*iter1 < *pos)
+                pos = iter1;
+        }
+        std::swap(*iter, *pos);
+    }
 }
 
 #endif //SELECT_SORT_H

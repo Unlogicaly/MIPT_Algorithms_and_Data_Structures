@@ -5,17 +5,23 @@
 #ifndef UNTITLED_COUNT_SORT_H
 #define UNTITLED_COUNT_SORT_H
 
-#include <functional>
-#include <vector>
+template<typename _Iter>
+void count_sort(_Iter begin, _Iter end) {
 
-template<typename T, class Cmp = std::less<T>>
-void _count_sort(std::vector<T> &array, size_t left, size_t right, int max, Cmp cmp={}){
-    std::vector<int> src(max, 0);
+    auto max = *begin;
+    for (auto iter = begin; iter != end; ++iter)
+        max = std::max(max, *iter);
 
-    for (auto i = left; i < right; ++i)
-        src[array[i]]++;
+    ++max;
 
-    int sum = 0;
+    auto src = new decltype(max) [max];
+    for (auto i = 0; i < max; ++i)
+        src[i] = 0;
+
+    for (auto iter = begin; iter != end; ++iter)
+        ++src[*iter];
+
+    uint_fast64_t sum{0};
 
     for (auto i = 0; i < max; ++i) {
         auto tmp = src[i];
@@ -23,25 +29,16 @@ void _count_sort(std::vector<T> &array, size_t left, size_t right, int max, Cmp 
         sum += tmp;
     }
 
-    std::vector<T> tmp(right - left, 0);
+    auto tmp = new decltype(max) [end - begin];
 
-    for (auto i = left; i < right; ++i) {
-        tmp[src[array[i]]++] = array[i];
-    }
+    for (auto iter = begin; iter != end; ++iter)
+        tmp[src[*iter]++] = *iter;
 
-    memcpy(array.data() + left, tmp.data(), (right - left) * sizeof(T));
-}
+    for(auto i = 0; i < end - begin; ++i)
+        *(begin + i) = *(tmp + i);
 
-template<typename T, class Cmp = std::less<T>>
-void count_sort(std::vector<T> &array, Cmp cmp={}) {
-    if (array.size() <= 1)
-        return;
-
-    T max = array[0];
-    for (auto i = 1; i < array.size(); ++i)
-        max = std::max(max, array[i]);
-
-    _count_sort(array, 0, array.size(), max + 1, cmp);
+    delete[] src;
+    delete[] tmp;
 }
 
 #endif //UNTITLED_COUNT_SORT_H
