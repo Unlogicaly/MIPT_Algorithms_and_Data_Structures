@@ -9,9 +9,10 @@
 #include "deleter.h"
 #include <memory>
 #include <cassert>
+#include <queue>
 
 template <typename T, class _Cmp = std::less<>>
-class BinaryTree {
+class BinomialTree {
 
   private:
 
@@ -25,12 +26,12 @@ class BinaryTree {
 
   public:
 
-    BinaryTree() = default;
+    BinomialTree() = default;
 
-    explicit BinaryTree(const T &elem) : root(std::make_unique<Node<T>>(elem).release()), key{elem} {}
+    explicit BinomialTree(const T &elem) : root(std::make_unique<Node<T>>(elem).release()), key{elem} {}
 
     template <class _Iter>
-    BinaryTree(_Iter begin, _Iter end);
+    BinomialTree(_Iter begin, _Iter end);
 
     void insert(const T &elem);
 
@@ -44,14 +45,22 @@ class BinaryTree {
 
     void del_first();
 
-    ~BinaryTree() {
+    void in_order(std::ostream &os);
+
+    void post_order(std::ostream &os);
+
+    void pre_order(std::ostream &os);
+
+    void level_order(std::ostream &os);
+
+    ~BinomialTree() {
 
         delete root;
     }
 };
 
 template <typename T, class _Cmp>
-void BinaryTree<T, _Cmp>::insert(const T &elem) {
+void BinomialTree<T, _Cmp>::insert(const T &elem) {
 
     auto cur = this->root;
 
@@ -81,7 +90,7 @@ void BinaryTree<T, _Cmp>::insert(const T &elem) {
 
 template <typename T, class _Cmp>
 template <class _Iter>
-BinaryTree<T, _Cmp>::BinaryTree(_Iter begin, _Iter end) {
+BinomialTree<T, _Cmp>::BinomialTree(_Iter begin, _Iter end) {
 
     for (; begin != end; ++begin) {
         this->insert(*begin);
@@ -89,7 +98,7 @@ BinaryTree<T, _Cmp>::BinaryTree(_Iter begin, _Iter end) {
 }
 
 template <typename T, class _Cmp>
-Node<T> *BinaryTree<T, _Cmp>::_first(Node<T> *root) {
+Node<T> *BinomialTree<T, _Cmp>::_first(Node<T> *root) {
 
     if (!root)
         return root;
@@ -102,13 +111,13 @@ Node<T> *BinaryTree<T, _Cmp>::_first(Node<T> *root) {
 }
 
 template <typename T, class _Cmp>
-const T &BinaryTree<T, _Cmp>::first() {
+const T &BinomialTree<T, _Cmp>::first() {
 
     return key;
 }
 
 template <typename T, class _Cmp>
-bool BinaryTree<T, _Cmp>::del(const T &elem) {
+bool BinomialTree<T, _Cmp>::del(const T &elem) {
 
     if (!this->root)
         return false;
@@ -173,9 +182,159 @@ bool BinaryTree<T, _Cmp>::del(const T &elem) {
 }
 
 template <typename T, class _Cmp>
-void BinaryTree<T, _Cmp>::del_first() {
+void BinomialTree<T, _Cmp>::del_first() {
 
     this->del(key);
+}
+
+template <typename T, class _Cmp>
+void BinomialTree<T, _Cmp>::in_order(std::ostream &os) {
+
+    if (!root)
+        return;
+
+    auto cur = root;
+
+    while (cur) {
+
+        if (cur->left and !cur->left->visited)
+            cur = cur->left;
+
+        else if (!cur->right) {
+            os << cur->val << ' ';
+            cur->visited = true;
+
+            if (cur->left)
+                cur->left->visited = false;
+
+            cur = cur->parent;
+        }
+
+        else if (cur->right->visited) {
+            cur->right->visited = false;
+
+            if (cur->left)
+                cur->left->visited = false;
+
+            cur = cur->parent;
+        }
+
+        else {
+            cur->visited = true;
+            os << cur->val << ' ';
+            cur = cur->right;
+        }
+    }
+
+    this->root->visited = false;
+}
+
+template <typename T, class _Cmp>
+void BinomialTree<T, _Cmp>::post_order(std::ostream &os) {
+
+    if (!root)
+        return;
+
+    auto cur = root;
+
+    while (cur) {
+
+        if (cur->left and !cur->left->visited)
+            cur = cur->left;
+
+        else if (!cur->right) {
+            os << cur->val << ' ';
+            cur->visited = true;
+
+            if (cur->left)
+                cur->left->visited = false;
+
+            cur = cur->parent;
+        }
+
+        else if (cur->right->visited) {
+            cur->right->visited = false;
+            cur->visited = true;
+            if (cur->left)
+                cur->left->visited = false;
+
+            os << cur->val << ' ';
+
+            cur = cur->parent;
+        }
+
+        else {
+            cur = cur->right;
+        }
+    }
+
+    this->root->visited = false;
+}
+
+template <typename T, class _Cmp>
+void BinomialTree<T, _Cmp>::pre_order(std::ostream &os) {
+
+    if (!root)
+        return;
+
+    auto cur = root;
+
+    while (cur) {
+
+        if (cur->left and !cur->left->visited) {
+            os << cur->val << ' ';
+            cur = cur->left;
+        }
+
+        else if (!cur->right) {
+            if (!cur->left)
+                os << cur->val << ' ';
+            cur->visited = true;
+
+            if (cur->left)
+                cur->left->visited = false;
+
+            cur = cur->parent;
+        }
+
+        else if (cur->right->visited) {
+            cur->right->visited = false;
+
+            if (cur->left)
+                cur->left->visited = false;
+
+            cur = cur->parent;
+        }
+
+        else {
+            if (!cur->left)
+                os << cur->val << ' ';
+            cur->visited = true;
+            cur = cur->right;
+        }
+    }
+
+    this->root->visited = false;
+}
+
+template <typename T, class _Cmp>
+void BinomialTree<T, _Cmp>::level_order(std::ostream &os) {
+
+    std::queue<Node<T> *> buffer{};
+
+    buffer.push(this->root);
+
+    while (!buffer.empty()) {
+
+        if (buffer.front()->left)
+            buffer.push(buffer.front()->left);
+        if (buffer.front()->right)
+            buffer.push(buffer.front()->right);
+
+        os << buffer.front()->val << ' ';
+
+        buffer.pop();
+    }
 }
 
 
