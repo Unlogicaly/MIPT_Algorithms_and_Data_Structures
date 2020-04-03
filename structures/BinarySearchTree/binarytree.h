@@ -72,7 +72,7 @@ void BinomialTree<T, _Cmp>::insert(const T &elem) {
         return;
     }
 
-    this->key = std::min(key, elem);
+    this->key = std::min(key, elem, cmp);
 
     auto prev = cur;
 
