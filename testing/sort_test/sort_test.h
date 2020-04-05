@@ -23,7 +23,7 @@
  * @param max_size max size of sorting arrays. Also this parameter impacts on number generating range and amount of tests, so
  * increasing the parameter will slow down implementation of the testing function exponentially
  *
- * Example of creating map funcs:
+ * Example of creating map funcs: @code
  *      std::map<std::string, void (*)(int_fast64_t *, int_fast64_t *, typeof(std::less<>))> funcs {
  *          {"quick sort", &quick_sort<int_fast64_t *, std::less<>>}
  *      };
