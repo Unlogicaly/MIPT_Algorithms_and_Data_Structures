@@ -1,13 +1,54 @@
+
 //
-// Created by tarog on 3/29/2020.
+// Created by tarog on 3/19/2020.
 //
 
-#ifndef THINHEAP_THINHEAP_H
-#define THINHEAP_THINHEAP_H
-
-#include "heap_base.h"
+#include <cinttypes>
+#include <memory>
 #include <cmath>
 #include <vector>
+#include <iostream>
+#include <stack>
+
+template <typename T>
+struct Node {
+
+    T val{};
+    uint_fast64_t rk{0};
+
+    Node<T> *child{nullptr};
+    Node<T> *left{nullptr};
+    Node<T> *right{nullptr};
+
+    bool rec{true};
+
+    Node() = default;
+
+    explicit Node(const T &elem) : val{elem} {}
+
+    ~Node() {
+
+        if (rec) {
+            delete child;
+            delete right;
+        }
+    }
+};
+
+template <typename T>
+struct heap_base {
+
+    Node<T> *first{nullptr};
+
+    Node<T> *last{nullptr};
+
+    heap_base() : first{nullptr}, last{nullptr} {};
+
+    ~heap_base() {
+
+        delete first;
+    }
+};
 
 const double f{(1 + std::sqrt(5)) / 2};
 
@@ -205,4 +246,38 @@ ThinHeap<T, _Cmp>::ThinHeap(ThinHeap<T, _Cmp> &&other) noexcept {
     std::swap(this->sz, other.sz);
 }
 
-#endif //THINHEAP_THINHEAP_H
+int main() {
+
+    std::ios::sync_with_stdio(false);
+
+    int n, k;
+    std::cin >> n >> k;
+
+    ThinHeap<int> buffer;
+    std::vector<int> res;
+
+    for (auto i = 0; i < 2 * k - 1; ++i) {
+        int tmp;
+        std::cin >> tmp;
+        buffer.push(tmp);
+    }
+
+    for (auto i = 2 * k - 1; i < n; ++i) {
+        res.push_back(buffer.top());
+        buffer.pop();
+        int tmp;
+        std::cin >> tmp;
+        buffer.push(tmp);
+    }
+
+    while (!buffer.empty()) {
+        res.push_back(buffer.top());
+        buffer.pop();
+    }
+
+    for (auto i: res)
+        std::cout << i << " ";
+
+    return 0;
+}
+
