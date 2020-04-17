@@ -5,7 +5,6 @@
 #ifndef UNTITLED8_NODE_H
 #define UNTITLED8_NODE_H
 
-
 template <typename T>
 struct Node {
 

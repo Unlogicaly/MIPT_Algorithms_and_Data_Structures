@@ -35,6 +35,9 @@ class RBTree {
 
     void del_node(Node<T> *node);
 
+    template <typename _Iter>
+    void _in_order(_Iter iter, Node<T> *cur);
+
   public:
     RBTree() = default;
 
@@ -65,6 +68,9 @@ class RBTree {
 
         return !this->root;
     }
+
+    template <typename _Iter>
+    void in_order(_Iter begin);
 
     ~RBTree() {
 
@@ -302,6 +308,30 @@ void RBTree<T, _Cmp>::del(const T &elem) {
 
     if (this->root and this->key == elem)
         this->key = this->find_first(this->root)->val;
+}
+
+template <typename T, class _Cmp>
+template <typename _Iter>
+void RBTree<T, _Cmp>::in_order(_Iter begin) {
+
+    if (!this->root)
+        return;
+
+    _in_order(&begin, this->root);
+}
+
+template <typename T, class _Cmp>
+template <typename _Iter>
+void RBTree<T, _Cmp>::_in_order(_Iter iter, Node<T> *cur) {
+
+    if (cur->left)
+        _in_order(iter, cur->left);
+
+    **iter = cur->val;
+    ++(*iter);
+
+    if (cur->right)
+        _in_order(iter, cur->right);
 }
 
 

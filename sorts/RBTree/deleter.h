@@ -5,7 +5,6 @@
 #ifndef UNTITLED8_DELETER_H
 #define UNTITLED8_DELETER_H
 
-
 template <typename T>
 struct deleter {
     T *src;
