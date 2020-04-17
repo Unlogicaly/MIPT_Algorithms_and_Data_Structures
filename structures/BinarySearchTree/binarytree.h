@@ -12,7 +12,7 @@
 #include <queue>
 
 template <typename T, class _Cmp = std::less<>>
-class BinomialTree {
+class BinaryTree {
 
   private:
 
@@ -26,12 +26,12 @@ class BinomialTree {
 
   public:
 
-    BinomialTree() = default;
+    BinaryTree() = default;
 
-    explicit BinomialTree(const T &elem) : root(std::make_unique<Node<T>>(elem).release()), key{elem} {}
+    explicit BinaryTree(const T &elem) : root(std::make_unique<Node<T>>(elem).release()), key{elem} {}
 
     template <class _Iter>
-    BinomialTree(_Iter begin, _Iter end);
+    BinaryTree(_Iter begin, _Iter end);
 
     void insert(const T &elem);
 
@@ -53,14 +53,14 @@ class BinomialTree {
 
     void level_order(std::ostream &os);
 
-    ~BinomialTree() {
+    ~BinaryTree() {
 
         delete root;
     }
 };
 
 template <typename T, class _Cmp>
-void BinomialTree<T, _Cmp>::insert(const T &elem) {
+void BinaryTree<T, _Cmp>::insert(const T &elem) {
 
     auto cur = this->root;
 
@@ -90,7 +90,7 @@ void BinomialTree<T, _Cmp>::insert(const T &elem) {
 
 template <typename T, class _Cmp>
 template <class _Iter>
-BinomialTree<T, _Cmp>::BinomialTree(_Iter begin, _Iter end) {
+BinaryTree<T, _Cmp>::BinaryTree(_Iter begin, _Iter end) {
 
     for (; begin != end; ++begin) {
         this->insert(*begin);
@@ -98,7 +98,7 @@ BinomialTree<T, _Cmp>::BinomialTree(_Iter begin, _Iter end) {
 }
 
 template <typename T, class _Cmp>
-Node<T> *BinomialTree<T, _Cmp>::_first(Node<T> *root) {
+Node<T> *BinaryTree<T, _Cmp>::_first(Node<T> *root) {
 
     if (!root)
         return root;
@@ -111,13 +111,13 @@ Node<T> *BinomialTree<T, _Cmp>::_first(Node<T> *root) {
 }
 
 template <typename T, class _Cmp>
-const T &BinomialTree<T, _Cmp>::first() {
+const T &BinaryTree<T, _Cmp>::first() {
 
     return key;
 }
 
 template <typename T, class _Cmp>
-bool BinomialTree<T, _Cmp>::del(const T &elem) {
+bool BinaryTree<T, _Cmp>::del(const T &elem) {
 
     if (!this->root)
         return false;
@@ -182,13 +182,13 @@ bool BinomialTree<T, _Cmp>::del(const T &elem) {
 }
 
 template <typename T, class _Cmp>
-void BinomialTree<T, _Cmp>::del_first() {
+void BinaryTree<T, _Cmp>::del_first() {
 
     this->del(key);
 }
 
 template <typename T, class _Cmp>
-void BinomialTree<T, _Cmp>::in_order(std::ostream &os) {
+void BinaryTree<T, _Cmp>::in_order(std::ostream &os) {
 
     if (!root)
         return;
@@ -230,7 +230,7 @@ void BinomialTree<T, _Cmp>::in_order(std::ostream &os) {
 }
 
 template <typename T, class _Cmp>
-void BinomialTree<T, _Cmp>::post_order(std::ostream &os) {
+void BinaryTree<T, _Cmp>::post_order(std::ostream &os) {
 
     if (!root)
         return;
@@ -272,7 +272,7 @@ void BinomialTree<T, _Cmp>::post_order(std::ostream &os) {
 }
 
 template <typename T, class _Cmp>
-void BinomialTree<T, _Cmp>::pre_order(std::ostream &os) {
+void BinaryTree<T, _Cmp>::pre_order(std::ostream &os) {
 
     if (!root)
         return;
@@ -318,7 +318,7 @@ void BinomialTree<T, _Cmp>::pre_order(std::ostream &os) {
 }
 
 template <typename T, class _Cmp>
-void BinomialTree<T, _Cmp>::level_order(std::ostream &os) {
+void BinaryTree<T, _Cmp>::level_order(std::ostream &os) {
 
     std::queue<Node<T> *> buffer{};
 
