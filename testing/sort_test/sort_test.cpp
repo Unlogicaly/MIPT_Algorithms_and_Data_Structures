@@ -8,7 +8,7 @@
 void test_func(void (*func)(int_fast64_t *, int_fast64_t *, typeof(std::less<>)),
                std::map<uint_fast64_t, double> &full_random_time,
                std::map<std::pair<uint_fast64_t, uint_fast64_t>, double> &part_random_time,
-               std::istream &full_random_is, std::istream &part_random_is) {
+               std::istream &full_random_is, std::istream &part_random_is, bool full) {
 
     uint_fast64_t quantity{0}, size{0}, n{0};
 
@@ -39,6 +39,9 @@ void test_func(void (*func)(int_fast64_t *, int_fast64_t *, typeof(std::less<>))
 
         full_random_time.insert({size, time / quantity});
     }
+
+    if (!full)
+        return;
 
     uint_fast64_t degree{0};
 
@@ -92,7 +95,7 @@ void del_min_max(std::map<T, std::vector<P>> &map) {
 }
 
 void test_funcs(std::map<std::string, void (*)(int_fast64_t *, int_fast64_t *, typeof(std::less<>))> &funcs,
-                uint_fast64_t max_size) {
+                uint_fast64_t max_size, bool full) {
 
     int_fast64_t min = -max_size, max = max_size;
     std::vector<size_t> sizes{}, quantities{}, degrees{1, 2, 5, 10};
@@ -129,7 +132,7 @@ void test_funcs(std::map<std::string, void (*)(int_fast64_t *, int_fast64_t *, t
             full_rand_times[i].insert({func.first, {}});
             part_rand_times[i].insert({func.first, {}});
             test_func(func.second, full_rand_times[i].at(func.first), part_rand_times[i].at(func.first), full_random_is,
-                      part_random_is);
+                      part_random_is, full);
         }
     }
 
