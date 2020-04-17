@@ -8,22 +8,22 @@
 #include "count_sort.h"
 #include <cmath>
 
-template <typename T, class Cmp = std::less<T>>
-struct ByteCmp {
-    int byte;
-    Cmp cmp{};
+template <typename T>
+struct Byte {
+    size_t byte;
 
-    explicit ByteCmp(int byte) : byte{byte} {}
+    explicit Byte(size_t byte) : byte{byte} {}
 
-    bool operator()(const T &lhs, const T &rhs) {
-        return cmp(lhs / size_t(std::pow(10, byte)) % 10, rhs / size_t(std::pow(10, byte)) % 10);
+    int operator()(T elem) {
+        return (elem >> 8 * byte) & uint8_t(255);
     }
 };
 
-template<typename T, class Cmp = std::less<T>>
-void radix_sort(std::vector<T> &array, int max_byte, Cmp cmp={}) {
-    for (auto i = 0; i <= max_byte; ++i)
-        count_sort(array, ByteCmp<T, Cmp>(i));
+template<typename T>
+void radix_sort(std::vector<T> &array, T max) {
+
+    for (size_t i = 0; i < sizeof(T); ++i)
+        count_sort(array, max, Byte<T>{i});
 }
 
 #endif //UNTITLED_LSD_RADIX_SORT_H

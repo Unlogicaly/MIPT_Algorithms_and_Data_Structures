@@ -5,40 +5,65 @@
 #ifndef UNTITLED_COUNT_SORT_H
 #define UNTITLED_COUNT_SORT_H
 
-template<typename _Iter>
-void count_sort(_Iter begin, _Iter end) {
+#include <functional>
+#include <vector>
+#include <cassert>
 
-    auto max = *begin;
-    for (auto iter = begin; iter != end; ++iter)
-        max = std::max(max, *iter);
+template<typename T>
+struct Self {
 
-    ++max;
+    size_t operator ()(const T &elem) {
+        return size_t(elem);
+    }
+};
 
-    auto src = new decltype(max) [max];
-    for (auto i = 0; i < max; ++i)
-        src[i] = 0;
+template<typename T, class Feature = Self<T>>
+void _count_sort(std::vector<T> &array, size_t left, size_t right, T max, Feature feature={}, bool return_counts = false,
+                 std::vector<size_t> *counts = nullptr){
 
-    for (auto iter = begin; iter != end; ++iter)
-        ++src[*iter];
+    auto *src = new std::vector<size_t>(max, 0);
 
-    uint_fast64_t sum{0};
+    for (auto i = left; i < right; ++i)
+        src->at(feature(array[i]))++;
+
+    size_t sum = 0;
 
     for (auto i = 0; i < max; ++i) {
-        auto tmp = src[i];
-        src[i] = sum;
+        auto tmp = src->at(i);
+        src->at(i) = sum;
         sum += tmp;
     }
 
-    auto tmp = new decltype(max) [end - begin];
+    auto *tmp = new std::vector<T>(right - left);
 
-    for (auto iter = begin; iter != end; ++iter)
-        tmp[src[*iter]++] = *iter;
+    for (auto i = left; i < right; ++i) {
+        tmp->at(src->at(feature(array[i]))++) = array[i];
+    }
 
-    for(auto i = 0; i < end - begin; ++i)
-        *(begin + i) = *(tmp + i);
+    if (return_counts) {
+        std::swap(*counts, *src);
+    }
 
-    delete[] src;
-    delete[] tmp;
+    else {
+        delete counts;
+    }
+
+    delete src;
+
+    for (auto i = 0; i < tmp->size(); ++i) {
+        array[i + left] = tmp->at(i);
+    }
+
+    delete tmp;
+}
+
+template<typename T, class Feature = Self<T>>
+void count_sort(std::vector<T> &array, T max, Feature feature={}, bool return_counts = false,
+                std::vector<size_t> *counts = nullptr) {
+
+    assert((return_counts and counts) or !(return_counts or counts));
+
+    _count_sort(array, 0, array.size(), max, feature, return_counts, counts);
 }
 
 #endif //UNTITLED_COUNT_SORT_H
