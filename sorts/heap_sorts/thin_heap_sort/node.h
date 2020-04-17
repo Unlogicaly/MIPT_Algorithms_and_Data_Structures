@@ -8,30 +8,34 @@
 #include <cinttypes>
 #include <memory>
 
-template <typename T>
-struct Node {
+namespace thin {
+    template <typename T>
+    struct Node {
 
-    T val{};
-    uint_fast64_t rk{0};
+        T val{};
 
-    Node<T> *child{nullptr};
-    Node<T> *left{nullptr};
-    Node<T> *right{nullptr};
+        uint_fast64_t rk{0};
 
-    bool rec{true};
+        thin::Node<T> *child{nullptr};
 
-    Node() = default;
+        thin::Node<T> *left{nullptr};
 
-    explicit Node(const T &elem) : val{elem} {}
+        thin::Node<T> *right{nullptr};
 
-    ~Node() {
+        bool rec{true};
 
-        if (rec) {
-            delete child;
-            delete right;
+        Node() = default;
+
+        explicit Node(const T &elem) : val{elem} {}
+
+        ~Node() {
+
+            if (rec) {
+                delete child;
+                delete right;
+            }
         }
-    }
-};
-
+    };
+}
 
 #endif //THINHEAP_NODE_H

@@ -2,13 +2,13 @@
 // Created by tarog on 3/19/2020.
 //
 
-#ifndef HEAP_SORT_H
-#define HEAP_SORT_H
+#ifndef THINHEAP_SORT_H
+#define THINHEAP_SORT_H
 
 #include "thinheap.h"
 
 template<typename _Iter, class _Cmp>
-void heap_sort(_Iter begin, _Iter end, _Cmp cmp = {}) {
+void thin_heap_sort(_Iter begin, _Iter end, _Cmp cmp = {}) {
 
     ThinHeap<typeof(*begin), _Cmp> src(begin, end);
 
@@ -19,7 +19,7 @@ void heap_sort(_Iter begin, _Iter end, _Cmp cmp = {}) {
 }
 
 template<typename _Iter>
-void heap_sort(_Iter begin, _Iter end) {
+void thin_heap_sort(_Iter begin, _Iter end) {
 
     ThinHeap<typeof(*begin)> src(begin, end);
 
@@ -29,4 +29,4 @@ void heap_sort(_Iter begin, _Iter end) {
     }
 }
 
-#endif //HEAP_SORT_H
+#endif //THINHEAP_SORT_H

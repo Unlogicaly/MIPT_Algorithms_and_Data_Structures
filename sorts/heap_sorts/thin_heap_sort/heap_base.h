@@ -8,20 +8,22 @@
 #include <memory>
 #include "node.h"
 
-template <typename T>
-struct heap_base {
+namespace thin {
 
-    Node<T> *first{nullptr};
+    template <typename T>
+    struct heap_base {
 
-    Node<T> *last{nullptr};
+        thin::Node<T> *first{nullptr};
 
-    heap_base() : first{nullptr}, last{nullptr} {};
+        thin::Node<T> *last{nullptr};
 
-    ~heap_base() {
+        heap_base() : first{nullptr}, last{nullptr} {};
 
-        delete first;
-    }
-};
+        ~heap_base() {
 
+            delete first;
+        }
+    };
+}
 
 #endif //THINHEAP_HEAP_BASE_H

@@ -12,17 +12,15 @@
 const double f{(1 + std::sqrt(5)) / 2};
 
 template<typename T, class _Cmp = std::less<T>>
-class ThinHeap : private heap_base<T> {
+  class ThinHeap : private thin::heap_base<T> {
 
   private:
-
-    uint_fast64_t sz{0};
 
     _Cmp cmp{};
 
     uint_fast64_t n{0};
 
-    void insert(Node<T> *node) {
+    void insert(thin::Node<T> *node) {
 
         if (!this->first) {
             this->first = node;
@@ -38,7 +36,7 @@ class ThinHeap : private heap_base<T> {
         }
     }
 
-    void copy_node(Node<T> *node) {
+    void copy_node(thin::Node<T> *node) {
 
         if (!node)
             return;
@@ -48,7 +46,7 @@ class ThinHeap : private heap_base<T> {
         copy_node(node->right);
     }
 
-    bool is_thin(Node<T> *node) {
+    bool is_thin(thin::Node<T> *node) {
 
         return (node->rk ? node->rk == 1 ? !node->child : node->child->rk + 1 != node->rk : false);
     }
@@ -75,10 +73,6 @@ class ThinHeap : private heap_base<T> {
 
     void pop();
 
-    uint_fast64_t size(){
-        return sz;
-    }
-
     bool empty() {
         return !this->n;
     }
@@ -87,9 +81,7 @@ class ThinHeap : private heap_base<T> {
 template <typename T, class _Cmp>
 void ThinHeap<T, _Cmp>::push(const T &elem) {
 
-    ++this->sz;
-
-    auto tmp_ptr = std::make_unique<Node<T>>(elem);
+    auto tmp_ptr = std::make_unique<thin::Node<T>>(elem);
 
     this->insert(tmp_ptr.release());
     ++n;
@@ -104,9 +96,7 @@ const T &ThinHeap<T, _Cmp>::top() {
 template <typename T, class _Cmp>
 void ThinHeap<T, _Cmp>::pop() {
 
-    --this->sz;
-
-    std::unique_ptr<Node<T>> tmp{this->first};
+    std::unique_ptr<thin::Node<T>> tmp{this->first};
 
     tmp->rec = false;
 
@@ -117,7 +107,7 @@ void ThinHeap<T, _Cmp>::pop() {
 
     auto x = tmp->child;
 
-    Node<T> *next{nullptr};
+    thin::Node<T> *next{nullptr};
 
     while (x) {
         if (is_thin(x))
@@ -131,7 +121,7 @@ void ThinHeap<T, _Cmp>::pop() {
     }
 
     x = this->first;
-    std::vector<Node<T> *> aux(uint_fast64_t(std::log(n)/std::log(f)) + 1, nullptr);
+    std::vector<thin::Node<T> *> aux(uint_fast64_t(std::log(n)/std::log(f)) + 1, nullptr);
 
     while(x) {
 
@@ -181,8 +171,6 @@ template <typename T, class _Cmp>
 template <class _Iter>
 ThinHeap<T, _Cmp>::ThinHeap(_Iter begin, _Iter end) {
 
-    this->sz = end - begin;
-
     for (auto iter = begin; iter != end; ++iter) {
 
         this->push(*iter);
@@ -190,7 +178,7 @@ ThinHeap<T, _Cmp>::ThinHeap(_Iter begin, _Iter end) {
 }
 
 template <typename T, class _Cmp>
-ThinHeap<T, _Cmp>::ThinHeap(const ThinHeap<T, _Cmp> &other) : cmp{other.cmp}, sz{other.sz} {
+ThinHeap<T, _Cmp>::ThinHeap(const ThinHeap<T, _Cmp> &other) : cmp{other.cmp} {
 
     copy_node(other.first);
 }
@@ -202,7 +190,6 @@ ThinHeap<T, _Cmp>::ThinHeap(ThinHeap<T, _Cmp> &&other) noexcept {
     std::swap(this->last, other.last);
     std::swap(this->n, other.n);
     std::swap(this->cmp, other.cmp);
-    std::swap(this->sz, other.sz);
 }
 
 #endif //THINHEAP_THINHEAP_H

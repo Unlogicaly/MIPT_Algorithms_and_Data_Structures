@@ -2,8 +2,8 @@
 // Created by tarog on 4/17/2020.
 //
 
-#ifndef UNTITLED_SKEW_HEAP_SORT_H
-#define UNTITLED_SKEW_HEAP_SORT_H
+#ifndef SKEW_HEAP_SORT_H
+#define SKEW_HEAP_SORT_H
 
 #include "skewHeap.h"
 
@@ -29,4 +29,4 @@ void skew_heap_sort(_Iter begin, _Iter end) {
     }
 }
 
-#endif //UNTITLED_SKEW_HEAP_SORT_H
+#endif //SKEW_HEAP_SORT_H

@@ -2,64 +2,66 @@
 // Created by tarog on 3/28/2020.
 //
 
-#ifndef SKEWHEAP_LEFTISTHEAP_H
-#define SKEWHEAP_LEFTISTHEAP_H
+#ifndef SKEWHEAP_H
+#define SKEWHEAP_H
 
 #include "node.h"
 #include <list>
 #include <functional>
 
-template <typename T>
-int_fast32_t rank(Node<T> *src) {
+namespace skew {
 
-    return (src ? std::min(rank(src->left), rank(src->right)) + 1 : -1);
+    template <typename T>
+    int_fast32_t rank(skew::Node<T> *src) {
+
+        return (src ? std::min(rank(src->left), rank(src->right)) + 1 : -1);
+    }
+
+    template <typename T>
+    struct heap_base {
+
+        skew::Node<T> *root{nullptr};
+
+        heap_base() = default;
+
+        explicit heap_base(const T &elem) : root{new skew::Node<T>{elem}} {
+        }
+
+        explicit heap_base(skew::Node<T> *other) : root{other ? new skew::Node<T>{*other} : nullptr} {
+        }
+
+        heap_base(const skew::heap_base<T> &other) : root{other.root ? new skew::Node<T>{*other.root} : nullptr} {
+        }
+
+        skew::heap_base<T> &operator=(const skew::heap_base<T> &other) {
+
+            this->root = new skew::Node<T>{*other.root};
+
+            return *this;
+        }
+
+        ~heap_base() {
+
+            delete root;
+        }
+    };
 }
-
-template <typename T>
-struct heap_base {
-
-    Node<T> *root{nullptr};
-
-    heap_base() = default;
-
-    explicit heap_base(const T &elem) : root{new Node<T>{elem}} {
-    }
-
-    explicit heap_base(Node<T> *other) : root{other ? new Node<T>{*other} : nullptr} {
-    }
-
-    heap_base(const heap_base<T> &other) : root{other.root ? new Node<T>{*other.root} : nullptr} {
-    }
-
-    heap_base<T> &operator=(const heap_base<T> &other) {
-
-        this->root = new Node<T>{*other.root};
-
-        return *this;
-    }
-
-    ~heap_base() {
-
-        delete root;
-    }
-};
-
 template <typename T, class _Cmp = std::less<T>>
-class SkewHeap : heap_base<T> {
+class SkewHeap : skew::heap_base<T> {
 
   private:
 
     _Cmp cmp{};
 
-    heap_base<T> merge(heap_base<T> lhs, heap_base<T> rhs);
+    skew::heap_base<T> merge(skew::heap_base<T> lhs, skew::heap_base<T> rhs);
 
   public:
     SkewHeap() = default;
 
-    explicit SkewHeap(const T &elem) : heap_base<T>(elem) {
+    explicit SkewHeap(const T &elem) : skew::heap_base<T>(elem) {
     }
 
-    SkewHeap(const SkewHeap<T, _Cmp> &other) : heap_base<T>(other.root), cmp{other.cmp} {
+    SkewHeap(const SkewHeap<T, _Cmp> &other) : skew::heap_base<T>(other.root), cmp{other.cmp} {
     }
 
     SkewHeap(SkewHeap<T, _Cmp> &&other) noexcept {
@@ -88,12 +90,12 @@ class SkewHeap : heap_base<T> {
 template <typename T, class _Cmp>
 void SkewHeap<T, _Cmp>::merge(const SkewHeap<T, _Cmp> &other) {
 
-    auto tmp{merge(heap_base<T>{this->root}, heap_base<T>{other.root})};
+    auto tmp{merge(skew::heap_base<T>{this->root}, skew::heap_base<T>{other.root})};
     std::swap(this->root, tmp.root);
 }
 
 template <typename T, class _Cmp>
-heap_base<T> SkewHeap<T, _Cmp>::merge(heap_base<T> lhs, heap_base<T> rhs) {
+skew::heap_base<T> SkewHeap<T, _Cmp>::merge(skew::heap_base<T> lhs, skew::heap_base<T> rhs) {
 
     if (!lhs.root)
         return rhs;
@@ -104,7 +106,7 @@ heap_base<T> SkewHeap<T, _Cmp>::merge(heap_base<T> lhs, heap_base<T> rhs) {
     if (!cmp(lhs.root->val, rhs.root->val))
         std::swap(lhs.root, rhs.root);
 
-    auto tmp{merge(heap_base<T>{lhs.root->right}, heap_base<T>{rhs.root})};
+    auto tmp{merge(skew::heap_base<T>{lhs.root->right}, skew::heap_base<T>{rhs.root})};
 
     std::swap(lhs.root->right, tmp.root);
 
@@ -124,7 +126,7 @@ void SkewHeap<T, _Cmp>::push(const T &elem) {
 template <typename T, class _Cmp>
 void SkewHeap<T, _Cmp>::pop() {
 
-    auto tmp{merge(heap_base<T>{this->root->left}, heap_base<T>{this->root->right})};
+    auto tmp{merge(skew::heap_base<T>{this->root->left}, skew::heap_base<T>{this->root->right})};
     std::swap(this->root, tmp.root);
 }
 
@@ -141,10 +143,10 @@ SkewHeap<T, _Cmp>::SkewHeap(_Iter begin, _Iter end) {
     if (begin == end)
         return;
 
-    std::list<heap_base<T>> tmp;
+    std::list<skew::heap_base<T>> tmp;
 
     for (auto iter = begin; iter != end; ++iter)
-        tmp.push_back(heap_base<T>{*iter});
+        tmp.push_back(skew::heap_base<T>{*iter});
 
     auto second = tmp.begin();
     ++second;
