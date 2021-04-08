@@ -1,0 +1,8 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Datasource local storage ignored files
+/../../../../../../../../../../:\Users\tarog\OneDrive - phystech.edu\inf_stuff\Algorithms\MIPT_Agorithms_and_Data_Structures\structures\Treap\.idea/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
